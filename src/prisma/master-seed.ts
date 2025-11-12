@@ -1,22 +1,30 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/master-client';
 import { encrypt } from '../utils/crypto';
-// import { PrismaClient as TenantPrismaClient } from '../../node_modules/.prisma/tenant-client';
 
 export const masterPrisma = new PrismaClient();
-// export const tenantPrisma = new TenantPrismaClient();
 
 async function execute() {
   const plainUrl = process.env.TENANT_DATABASE_URL!;
   const encryptedUrl = encrypt(plainUrl);
 
-  await masterPrisma.tenant.create({
-    data: {
-      name: 'Store 1',
+  const isExists = await masterPrisma.tenant.findUnique({
+    where: {
       slug: 'store1',
-      dbUrl: encryptedUrl,
     },
   });
 
+  if (!isExists) {
+    await masterPrisma.tenant.create({
+      data: {
+        name: 'Store 1',
+        slug: 'store1',
+        dbUrl: encryptedUrl,
+      },
+    });
+  }
+
   console.log('✅ Tenant registered with encrypted dbUrl:', encryptedUrl);
 }
-execute();
+execute()
+  .catch(console.error)
+  .finally(() => masterPrisma.$disconnect());

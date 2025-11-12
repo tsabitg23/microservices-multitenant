@@ -1,10 +1,17 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { TenantMiddleware } from './common/tenant.middleware';
+import { TenantManager } from './prisma/tenant-manager.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ProductsModule } from './product/product.module'
 
 @Module({
-  imports: [],
+  imports: [ProductsModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TenantManager],
 })
-export class AppModule {}
+export class AppModule {
+   configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TenantMiddleware).forRoutes('*');
+  }
+}
