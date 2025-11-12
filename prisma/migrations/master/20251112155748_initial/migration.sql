@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Tenant" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "dbUrl" TEXT NOT NULL,

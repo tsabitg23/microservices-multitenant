@@ -1,10 +1,14 @@
 import "dotenv/config";
 import { defineConfig, env } from "prisma/config";
 
+
+const schemaPath = process.env.PRISMA_SCHEMA_PATH ?? "prisma/master.prisma";
+const migrationsPath = process.env.PRISMA_MIGRATIONS_PATH ?? "prisma/migrations/master";
+
 export default defineConfig({
-  schema: "prisma/master.prisma",
+  schema: schemaPath,
   migrations: {
-    path: "prisma/migrations",
+    path: migrationsPath,
   },
   engine: "classic",
   datasource: {

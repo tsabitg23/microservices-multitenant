@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/tenant-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id        String   @id @default(uuid()) @db.Uuid
+  name  String
+  users User[]
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  password  String
+  roleId    String   @db.Uuid
+  role      Role     @relation(fields: [roleId], references: [id])
+
+  createdAt DateTime @default(now())
+  orders    Order[]
+}
+
+model Product {
+  id        String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  price       Float
+  stock       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orderDetail OrderDetail[]
+}
+
+model Order {
+  id        String   @id @default(uuid()) @db.Uuid
+  customerId String   @db.Uuid
+  customer   User     @relation(fields: [customerId], references: [id])
+  total      Float
+  status     String
+  createdAt  DateTime @default(now())
+  orderDetail OrderDetail[]
+}
+
+model OrderDetail {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId    String   @db.Uuid
+  productId  String   @db.Uuid
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  unitPrice  Float
+  lineTotal  Float 
+
+  createdAt  DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
