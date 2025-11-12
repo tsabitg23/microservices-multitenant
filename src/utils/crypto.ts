@@ -1,9 +1,8 @@
 import crypto from 'crypto';
 
 const ALGO = 'aes-256-gcm';
-const IV_LENGTH = 12; // recommended for GCM
+const IV_LENGTH = 12; 
 
-// Derive a 32-byte key from your string key using SHA-256
 function getKey(): Buffer {
   const keyString = process.env.ENCRYPTION_KEY;
   if (!keyString) {
@@ -20,7 +19,6 @@ export function encrypt(plainText: string): string {
   const encrypted = Buffer.concat([cipher.update(plainText, 'utf8'), cipher.final()]);
   const authTag = cipher.getAuthTag();
 
-  // return base64(iv + authTag + ciphertext)
   return Buffer.concat([iv, authTag, encrypted]).toString('base64');
 }
 
