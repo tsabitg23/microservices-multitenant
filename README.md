@@ -31,6 +31,40 @@
 $ yarn install
 ```
 
+## Database setup
+
+You have to create three databases
+- master
+- tenant1
+- tenant2
+
+after you created it, create env file with the command
+
+```
+cp .env.example .env
+```
+
+then update the 
+- DATABASE_URL with master
+- TENANT_DATABASE_URL with tenant1
+- TENANT2_DATABASE_URL with tenant2
+
+## Run database migration
+run this command
+
+```
+yarn prisma:migrate-db-master
+yarn prisma:migrate-db-tenant
+```
+
+## Seeding database
+run this command
+
+```
+yarn test:seed-master
+yarn test:seed-tenant
+```
+
 ## Compile and run the project
 
 ```bash
@@ -42,6 +76,12 @@ $ yarn run start:dev
 
 # production mode
 $ yarn run start:prod
+```
+
+
+To check swagger open
+```
+http://localhost:3000/api
 ```
 
 ## Run tests

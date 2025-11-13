@@ -15,7 +15,7 @@ async function execute() {
     },
   ];
   const isValidDbUrl = (url?: string): boolean => {
-    return !!url
+    return !!url;
   };
 
   // Filter valid tenants only

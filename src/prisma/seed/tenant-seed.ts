@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
 import { PrismaClient as TenantPrismaClient } from '.prisma/tenant-client';
-import { Role, ROLES_DATA } from '../../constants/roles';
+import { Role } from '../../constants/roles';
 import { executeTenant, isValidDbUrl, UserSeed } from './tenant-seed-util';
 
 const prisma = new TenantPrismaClient({
@@ -9,27 +9,9 @@ const prisma = new TenantPrismaClient({
 });
 
 async function main() {
-  await Promise.all(
-    ROLES_DATA.map(async (role) => {
-      await prisma.role.upsert({
-        where: {
-          id: role.id,
-        },
-        update: {
-          name: role.name,
-        },
-        create: {
-          id: role.id,
-          name: role.name,
-        },
-      });
-    }),
-  );
-
   const adminUserTenant1: UserSeed[] = [
     {
       email: 'admin@store1.com',
-      name: 'Store1 Admin',
       password: await bcrypt.hash('admin-password', 10),
       roleId: Role.admin,
     },
@@ -38,7 +20,6 @@ async function main() {
   const userTenant1: UserSeed[] = [
     {
       email: 'user@store1.local',
-      name: 'Store1 User',
       password: await bcrypt.hash('user-password', 10),
       roleId: Role.user,
     },
@@ -47,7 +28,6 @@ async function main() {
   const adminUserTenant2: UserSeed[] = [
     {
       email: 'admin@store2.com',
-      name: 'Store2 Admin',
       password: await bcrypt.hash('admin-password', 10),
       roleId: Role.admin,
     },
@@ -55,7 +35,6 @@ async function main() {
   const userTenant2: UserSeed[] = [
     {
       email: 'user@store2.local',
-      name: 'Store2 User',
       password: await bcrypt.hash('user-password', 10),
       roleId: Role.user,
     },

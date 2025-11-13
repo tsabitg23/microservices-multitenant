@@ -1,14 +1,13 @@
 import { PrismaClient } from '.prisma/tenant-client';
+import { ROLES_DATA } from '../../constants/roles';
 
 export type UserSeed = {
   email: string;
-  roleId: string
-  name: string;
-  password: string; 
+  roleId: string;
+  password: string;
 };
 
 export const isValidDbUrl = (u?: string) => !!u;
-
 
 export async function executeTenant(
   dbUrl: string,
@@ -21,6 +20,23 @@ export async function executeTenant(
   }
 
   const prisma = new PrismaClient({ datasources: { db: { url: dbUrl } } });
+
+  await Promise.all(
+    ROLES_DATA.map(async (role) => {
+      await prisma.role.upsert({
+        where: {
+          id: role.id,
+        },
+        update: {
+          name: role.name,
+        },
+        create: {
+          id: role.id,
+          name: role.name,
+        },
+      });
+    }),
+  );
 
   try {
     console.log('Seeding tenant:', dbUrl);
