@@ -41,6 +41,22 @@ async function main() {
     },
   });
 
+  const passwordUser = await bcrypt.hash('user-password', 10);
+  await prisma.user.upsert({
+    where: {
+        email: 'user1@store1.com'
+    },
+    update: {
+        password: passwordUser,
+        roleId: Role.user
+    },
+    create: {
+      email: 'user1@store1.com',
+      password: passwordUser,
+      roleId: Role.user,
+    },
+  });
+
   console.log('success')
 }
 

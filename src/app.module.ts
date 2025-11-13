@@ -9,27 +9,29 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-ioredis';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { JwtStrategy } from './auth/jwt.strategy';
 
 @Module({
   imports: [
-   ThrottlerModule.forRoot({
+    ThrottlerModule.forRoot({
       throttlers: [
         {
-          ttl: 60000,
-          limit: 10,
+          ttl: 60,
+          limit: 1000,
         },
       ],
     }),
     CacheModule.registerAsync({
-      isGlobal: true, 
+      isGlobal: true,
       useFactory: () => ({
         store: redisStore,
         url: process.env.REDIS_URL || 'redis://localhost:6379',
         ttl: 60,
       }),
     }),
-    ProductsModule,
     AuthModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -37,6 +39,7 @@ import * as redisStore from 'cache-manager-ioredis';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    JwtStrategy,
     AppService,
     TenantManager,
   ],

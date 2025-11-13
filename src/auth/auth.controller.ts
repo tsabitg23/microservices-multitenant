@@ -1,9 +1,9 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { Request } from 'express';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -41,7 +41,7 @@ export class AuthController {
     const token = await this.authSvc.login({
       sub: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role.name,
       tenantId: req.tenant.id,
     });
 

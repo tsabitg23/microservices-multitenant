@@ -32,7 +32,8 @@ model Product {
   price       Float
   stock       Int
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @updatedAt @default(now())
+  deletedAt   DateTime? @db.Timestamp
   orderDetail OrderDetail[]
 }
 
@@ -43,6 +44,8 @@ model Order {
   total      Float
   status     String
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  deletedAt   DateTime? @db.Timestamp
   orderDetail OrderDetail[]
 }
 
@@ -57,6 +60,7 @@ model OrderDetail {
   lineTotal  Float 
 
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
   @@index([orderId])
   @@index([productId])
