@@ -74,6 +74,14 @@ export class ProductsService {
   }
 
   async delete(id: string) {
+    await this.prisma.product.update({
+      where: {
+        id
+      },
+      data: {
+        deletedAt: new Date().toISOString()
+      }
+    })
     // return this.prisma.product
   }
 }
